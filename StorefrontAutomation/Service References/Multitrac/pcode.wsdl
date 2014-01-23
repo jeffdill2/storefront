@@ -1,0 +1,827 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.multitrac.com/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://idealliance.org/Specs/mailxml11.0D/mailxml_dd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s2="http://idealliance.org/Specs/mailxml11.0D/mailxml_defs" xmlns:s3="http://idealliance.org/Specs/mailxml11.0D/base" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.multitrac.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.multitrac.com/">
+      <s:import namespace="http://idealliance.org/Specs/mailxml11.0D/mailxml_dd" />
+      <s:element name="GetPCode">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="jobNo" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPCodeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPCodeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CreatePCodeFS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="jobSpecs" type="tns:Job_FS" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Job_FS">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="JobDetails" type="tns:ArrayOfJobDet_FS" />
+          <s:element minOccurs="1" maxOccurs="1" name="JobNo" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="ClientId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExternalJobNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="JobName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DivId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="IMB" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="ByStore" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="EntryPoint" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OriginZip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OriginServiceType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OriginBarcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ACS" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceOption" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="OEL" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfJobDet_FS">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="JobDet_FS" nillable="true" type="tns:JobDet_FS" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="JobDet_FS">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="StartDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="EndDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DropQty" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Version" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="InhStartDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="InhEndDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="DropName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="VendorID" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="MailClass" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MailClassName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="VendorName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PlanetCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MailerID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ServiceTypeID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CreatePCodeFSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CreatePCodeFSResult" type="tns:ReturnCode_FS" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ReturnCode_FS">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ErrorCode" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="JobNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorDesc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OriginBarcode" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AddJobDrop">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="jobno" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="det" type="tns:JobDet_FS" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddJobDropResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddJobDropResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateDropDates">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="jobno" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="version" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="firstmaildate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastmaildate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="firstinhomedate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastinhomedate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateDropDatesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UpdateDropDatesResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoadJobMailDatFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userId" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="jobid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="filename" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoadJobMailDatFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LoadJobMailDatFileResult" type="tns:ReturnCode_FS" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetReturnedRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientkey" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fromdate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="todate" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="excludeexported" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="allnew" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetReturnedRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetReturnedRecordsResult" type="tns:ArrayOfRTRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfRTRecord">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RTRecord" nillable="true" type="tns:RTRecord" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RTRecord">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="RId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomerId" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="JobNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="JobName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DropVersion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="DropName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DropDate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Address1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Address2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IMB" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostNet" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SavedDate" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRemittanceRecords">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientkey" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fromdate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="todate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRemittanceRecordsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRemittanceRecordsResult" type="tns:ArrayOfRemittanceRecord" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfRemittanceRecord">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RemittanceRecord" nillable="true" type="tns:RemittanceRecord" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RemittanceRecord">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ClientKey" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ScanDate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CircId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LoadAppointments">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientkey" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="appointments" type="tns:ArrayOfAppointment" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAppointment">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Appointment" nillable="true" type="tns:Appointment" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Appointment">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="UserLicenseCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="JobId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ContainerIMB" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="AppointmentNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FacilityName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FacilityLocaleKey" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="AppointmentDate" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LoadAppointmentsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LoadAppointmentsResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MultiJobSearch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientkey" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="searchby" type="tns:SearchBy" />
+            <s:element minOccurs="0" maxOccurs="1" name="searchvalue" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="jobno" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="internaljobno" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fromdate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="todate" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="getscans" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="SearchBy">
+        <s:restriction base="s:string">
+          <s:enumeration value="CustID" />
+          <s:enumeration value="CustName" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="MultiJobSearchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="MultiJobSearchResult" type="tns:ArrayOfMTDetail" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMTDetail">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MTDetail" nillable="true" type="tns:MTDetail" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MTDetail">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CustomerId" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="JobNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="JobName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InternalJobNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DropVersion" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="DropName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DropDate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Address1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Address2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Zip" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IMB" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LastScanDate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ScanQty" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstimateInHomeDateStart" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstimateInHomeDateEnd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MTScans" type="tns:ArrayOfMTScan" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfMTScan">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MTScan" nillable="true" type="tns:MTScan" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MTScan">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ScanDate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptCodeDesc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SCFEntry" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LoadTransportationData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" ref="s1:ContainerVisibilityQueryResponse" />
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clientkey" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoadTransportationDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LoadTransportationDataResult" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="serviceError" type="tns:ServiceError" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ServiceError">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InnerServiceError" type="tns:ServiceError" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://idealliance.org/Specs/mailxml11.0D/mailxml_dd">
+      <s:import namespace="http://idealliance.org/Specs/mailxml11.0D/mailxml_defs" />
+      <s:import namespace="http://idealliance.org/Specs/mailxml11.0D/base" />
+      <s:element name="ContainerVisibilityQueryResponse" type="s1:ContainerVisibilityQueryResponse" />
+      <s:complexType name="ContainerVisibilityQueryResponse">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="TrackingID" type="s:string" />
+          <s:choice minOccurs="1" maxOccurs="1">
+            <s:element minOccurs="0" maxOccurs="1" ref="s2:QueryError" />
+            <s:element minOccurs="0" maxOccurs="1" name="QueryResults" type="s1:QueryResults" />
+          </s:choice>
+        </s:sequence>
+        <s:attribute ref="s2:MessageGroupID" />
+        <s:attribute ref="s2:TotalMessageCount" />
+        <s:attribute ref="s2:MessageSerialNumber" />
+        <s:attribute ref="s2:TransmittedRecordCount" />
+        <s:attribute ref="s2:TotalRecordsAcrossMessages" />
+        <s:attribute ref="s2:LastMessage" />
+      </s:complexType>
+      <s:complexType name="QueryResults">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ContainerVisibilityEntry" type="s1:ContainerVisibilityEntry" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ContainerVisibilityEntry">
+        <s:sequence>
+          <s:choice minOccurs="0" maxOccurs="unbounded">
+            <s:element minOccurs="0" maxOccurs="1" name="CustomerGroupID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserLicenseCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="MailingGroupID" type="s:nonNegativeInteger" />
+            <s:element minOccurs="0" maxOccurs="1" name="MaildatJobID" type="s:string" />
+          </s:choice>
+          <s:element minOccurs="0" maxOccurs="1" name="ConsigneeApptID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LogicalIndicator" type="s3:yesNo" />
+          <s:element minOccurs="0" maxOccurs="1" name="CSAID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ContainerID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParentContainerID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SiblingContainerID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ContainerType" type="s3:mailXMLContainerType" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="USPSFacilityLocaleKey" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="USPSFacilityName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ScanDateTime" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ScanState" type="s1:MPSStateType" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ScanStatus" type="s3:inductionStatusType" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ScanIssueDescription" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ScanIssueResolution" type="s:string" />
+          <s:choice minOccurs="1" maxOccurs="1">
+            <s:element minOccurs="0" maxOccurs="1" name="IMpb" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="IMtb" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="IMcb" type="s:string" />
+          </s:choice>
+          <s:element minOccurs="0" maxOccurs="1" name="FullServiceComplianceIndicator" type="s3:yesNo" />
+          <s:element minOccurs="0" maxOccurs="1" name="FullServiceNonComplianceReasonCode" type="s1:reasonCodeType" />
+          <s:element minOccurs="0" maxOccurs="1" name="FSNonFSAvailabilityDate" type="s:date" />
+          <s:element minOccurs="0" maxOccurs="1" name="FullServiceIndicator" type="s3:yesNo" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="MPSStateType">
+        <s:restriction base="s:string">
+          <s:enumeration value="1" />
+          <s:enumeration value="2" />
+          <s:enumeration value="3" />
+          <s:enumeration value="4" />
+          <s:enumeration value="5" />
+          <s:enumeration value="6" />
+          <s:enumeration value="7" />
+          <s:enumeration value="8" />
+          <s:enumeration value="9" />
+          <s:enumeration value="10" />
+          <s:enumeration value="11" />
+          <s:enumeration value="12" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="reasonCodeType">
+        <s:restriction base="s:string">
+          <s:enumeration value="A" />
+          <s:enumeration value="B" />
+          <s:enumeration value="D" />
+          <s:enumeration value="E" />
+          <s:enumeration value="I" />
+          <s:enumeration value="L" />
+          <s:enumeration value="M" />
+          <s:enumeration value="N" />
+          <s:enumeration value="P" />
+          <s:enumeration value="Q" />
+          <s:enumeration value="R" />
+          <s:enumeration value="S" />
+          <s:enumeration value="U" />
+          <s:enumeration value="V" />
+          <s:enumeration value="X" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://idealliance.org/Specs/mailxml11.0D/mailxml_defs">
+      <s:import namespace="http://idealliance.org/Specs/mailxml11.0D/base" />
+      <s:element name="QueryError">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ReturnInfo" type="s2:basicReturnInfoType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="basicReturnInfoType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ReturnCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ReturnDescription" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ContainerErrorWarningBlock" type="s2:containerErrorWarningBlockType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="containerErrorWarningBlockType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ConsigneeContainerGroupingID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ConsigneeContentID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShipperContainerGroupingID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IMcb" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IMtb" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IMpb" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MailContentName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SchedulerContentID" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:attribute name="MessageGroupID" type="s:string" />
+      <s:attribute name="TotalMessageCount" type="s:positiveInteger" />
+      <s:attribute name="MessageSerialNumber" type="s:positiveInteger" />
+      <s:attribute name="TransmittedRecordCount" type="s:positiveInteger" />
+      <s:attribute name="TotalRecordsAcrossMessages" type="s:positiveInteger" />
+      <s:attribute default="No" name="LastMessage" type="s3:yesNo" />
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://idealliance.org/Specs/mailxml11.0D/base">
+      <s:simpleType name="yesNo">
+        <s:restriction base="s:string">
+          <s:enumeration value="Yes" />
+          <s:enumeration value="No" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="mailXMLContainerType">
+        <s:restriction base="s:string">
+          <s:enumeration value="1" />
+          <s:enumeration value="2" />
+          <s:enumeration value="3" />
+          <s:enumeration value="4" />
+          <s:enumeration value="5" />
+          <s:enumeration value="6" />
+          <s:enumeration value="7" />
+          <s:enumeration value="8" />
+          <s:enumeration value="9" />
+          <s:enumeration value="10" />
+          <s:enumeration value="11" />
+          <s:enumeration value="12" />
+          <s:enumeration value="13" />
+          <s:enumeration value="14" />
+          <s:enumeration value="E" />
+          <s:enumeration value="F" />
+          <s:enumeration value="L" />
+          <s:enumeration value="O" />
+          <s:enumeration value="P" />
+          <s:enumeration value="S" />
+          <s:enumeration value="T" />
+          <s:enumeration value="V" />
+          <s:enumeration value="B" />
+          <s:enumeration value="U" />
+          <s:enumeration value="Z" />
+          <s:enumeration value="X" />
+          <s:enumeration value="H" />
+          <s:enumeration value="A" />
+          <s:enumeration value="G" />
+          <s:enumeration value="D" />
+          <s:enumeration value="R" />
+          <s:enumeration value="C" />
+          <s:enumeration value="M" />
+          <s:enumeration value="AB" />
+          <s:enumeration value="Y" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="inductionStatusType">
+        <s:restriction base="s:string">
+          <s:enumeration value="A" />
+          <s:enumeration value="N" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetPCodeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPCode" />
+  </wsdl:message>
+  <wsdl:message name="GetPCodeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPCodeResponse" />
+  </wsdl:message>
+  <wsdl:message name="CreatePCodeFSSoapIn">
+    <wsdl:part name="parameters" element="tns:CreatePCodeFS" />
+  </wsdl:message>
+  <wsdl:message name="CreatePCodeFSSoapOut">
+    <wsdl:part name="parameters" element="tns:CreatePCodeFSResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddJobDropSoapIn">
+    <wsdl:part name="parameters" element="tns:AddJobDrop" />
+  </wsdl:message>
+  <wsdl:message name="AddJobDropSoapOut">
+    <wsdl:part name="parameters" element="tns:AddJobDropResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDropDatesSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateDropDates" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDropDatesSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateDropDatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoadJobMailDatFileSoapIn">
+    <wsdl:part name="parameters" element="tns:LoadJobMailDatFile" />
+  </wsdl:message>
+  <wsdl:message name="LoadJobMailDatFileSoapOut">
+    <wsdl:part name="parameters" element="tns:LoadJobMailDatFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetReturnedRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetReturnedRecords" />
+  </wsdl:message>
+  <wsdl:message name="GetReturnedRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetReturnedRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRemittanceRecordsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRemittanceRecords" />
+  </wsdl:message>
+  <wsdl:message name="GetRemittanceRecordsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRemittanceRecordsResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoadAppointmentsSoapIn">
+    <wsdl:part name="parameters" element="tns:LoadAppointments" />
+  </wsdl:message>
+  <wsdl:message name="LoadAppointmentsSoapOut">
+    <wsdl:part name="parameters" element="tns:LoadAppointmentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="MultiJobSearchSoapIn">
+    <wsdl:part name="parameters" element="tns:MultiJobSearch" />
+  </wsdl:message>
+  <wsdl:message name="MultiJobSearchSoapOut">
+    <wsdl:part name="parameters" element="tns:MultiJobSearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoadTransportationDataSoapIn">
+    <wsdl:part name="parameters" element="tns:LoadTransportationData" />
+  </wsdl:message>
+  <wsdl:message name="LoadTransportationDataSoapOut">
+    <wsdl:part name="parameters" element="tns:LoadTransportationDataResponse" />
+  </wsdl:message>
+  <wsdl:portType name="PCodeSoap">
+    <wsdl:operation name="GetPCode">
+      <wsdl:input message="tns:GetPCodeSoapIn" />
+      <wsdl:output message="tns:GetPCodeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CreatePCodeFS">
+      <wsdl:input message="tns:CreatePCodeFSSoapIn" />
+      <wsdl:output message="tns:CreatePCodeFSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddJobDrop">
+      <wsdl:input message="tns:AddJobDropSoapIn" />
+      <wsdl:output message="tns:AddJobDropSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDropDates">
+      <wsdl:input message="tns:UpdateDropDatesSoapIn" />
+      <wsdl:output message="tns:UpdateDropDatesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LoadJobMailDatFile">
+      <wsdl:input message="tns:LoadJobMailDatFileSoapIn" />
+      <wsdl:output message="tns:LoadJobMailDatFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetReturnedRecords">
+      <wsdl:input message="tns:GetReturnedRecordsSoapIn" />
+      <wsdl:output message="tns:GetReturnedRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRemittanceRecords">
+      <wsdl:input message="tns:GetRemittanceRecordsSoapIn" />
+      <wsdl:output message="tns:GetRemittanceRecordsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LoadAppointments">
+      <wsdl:input message="tns:LoadAppointmentsSoapIn" />
+      <wsdl:output message="tns:LoadAppointmentsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MultiJobSearch">
+      <wsdl:input message="tns:MultiJobSearchSoapIn" />
+      <wsdl:output message="tns:MultiJobSearchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LoadTransportationData">
+      <wsdl:input message="tns:LoadTransportationDataSoapIn" />
+      <wsdl:output message="tns:LoadTransportationDataSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PCodeSoap" type="tns:PCodeSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPCode">
+      <soap:operation soapAction="http://www.multitrac.com/GetPCode" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePCodeFS">
+      <soap:operation soapAction="http://www.multitrac.com/CreatePCodeFS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddJobDrop">
+      <soap:operation soapAction="http://www.multitrac.com/AddJobDrop" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDropDates">
+      <soap:operation soapAction="http://www.multitrac.com/UpdateDropDates" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadJobMailDatFile">
+      <soap:operation soapAction="http://www.multitrac.com/LoadJobMailDatFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetReturnedRecords">
+      <soap:operation soapAction="http://www.multitrac.com/GetReturnedRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRemittanceRecords">
+      <soap:operation soapAction="http://www.multitrac.com/GetRemittanceRecords" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadAppointments">
+      <soap:operation soapAction="http://www.multitrac.com/LoadAppointments" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MultiJobSearch">
+      <soap:operation soapAction="http://www.multitrac.com/MultiJobSearch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadTransportationData">
+      <soap:operation soapAction="http://www.multitrac.com/LoadTransportationData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PCodeSoap12" type="tns:PCodeSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPCode">
+      <soap12:operation soapAction="http://www.multitrac.com/GetPCode" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePCodeFS">
+      <soap12:operation soapAction="http://www.multitrac.com/CreatePCodeFS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddJobDrop">
+      <soap12:operation soapAction="http://www.multitrac.com/AddJobDrop" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDropDates">
+      <soap12:operation soapAction="http://www.multitrac.com/UpdateDropDates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadJobMailDatFile">
+      <soap12:operation soapAction="http://www.multitrac.com/LoadJobMailDatFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetReturnedRecords">
+      <soap12:operation soapAction="http://www.multitrac.com/GetReturnedRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRemittanceRecords">
+      <soap12:operation soapAction="http://www.multitrac.com/GetRemittanceRecords" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadAppointments">
+      <soap12:operation soapAction="http://www.multitrac.com/LoadAppointments" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MultiJobSearch">
+      <soap12:operation soapAction="http://www.multitrac.com/MultiJobSearch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoadTransportationData">
+      <soap12:operation soapAction="http://www.multitrac.com/LoadTransportationData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PCode">
+    <wsdl:port name="PCodeSoap" binding="tns:PCodeSoap">
+      <soap:address location="https://www.multitrac.com/pcws/pcode.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PCodeSoap12" binding="tns:PCodeSoap12">
+      <soap12:address location="https://www.multitrac.com/pcws/pcode.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
