@@ -40,6 +40,8 @@ namespace StorefrontCreditCardSite
         static string strProductPrice = "";
         static string strQuantity = "";
         static string strPostageAmount = "";
+        static string strShippingAmount = "";
+        static string strTaxAmount = "";
         static string strOrderFee = "";
 
         // Retrieving values from the web config file.
@@ -91,6 +93,8 @@ namespace StorefrontCreditCardSite
                 strProductPrice = " ** ERROR - UNABLE TO QUERY ** ";
                 strOrderFee = " ** ERROR - UNABLE TO QUERY ** ";
                 strPostageAmount = " ** ERROR - UNABLE TO QUERY ** ";
+                strShippingAmount = " ** ERROR - UNABLE TO QUERY ** ";
+                strTaxAmount = " ** ERROR - UNABLE TO QUERY ** ";
                 strPrintAmount = " ** ERROR - UNABLE TO QUERY ** ";
                 strTotalChargeAmount = " ** ERROR - UNABLE TO QUERY ** ";
             }
@@ -98,123 +102,19 @@ namespace StorefrontCreditCardSite
             {
                 strProductDescription = strProjectName;
                 strPrintAmount = (decimal.Parse(strQuantity) * decimal.Parse(strProductPrice)).ToString();
-                strTotalChargeAmount = (decimal.Parse(strPrintAmount) + decimal.Parse(strPostageAmount) + decimal.Parse(strOrderFee)).ToString();
+                strTotalChargeAmount = (decimal.Parse(strPrintAmount) + decimal.Parse(strPostageAmount) + decimal.Parse(strShippingAmount) + decimal.Parse(strTaxAmount) + decimal.Parse(strOrderFee)).ToString();
             }
 
             //////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////// PROPERLY FORMATTING THE CURRENCY AMOUNTS WITH TWO DECIMAL PLACES
             //////////////////////////////////////////////////////////////////////////////////////////
-            if (!strProductPrice.Contains("."))
-            {
-                strProductPrice = strProductPrice + ".00";
-            }
-            else
-            {
-                if (!(strProductPrice.Substring(strProductPrice.Length - 3, 1) == "."))
-                {
-                    if (strProductPrice.Substring(strProductPrice.Length - 2, 1) == ".")
-                    {
-                        strProductPrice = strProductPrice + "0";
-                    }
-                    else
-                    {
-                        if (strProductPrice.Substring(strProductPrice.Length - 1, 1) == "0")
-                        {
-                            strProductPrice = strProductPrice.Substring(0, strProductPrice.Length - 1);
-                        }
-                    }
-                }
-            }
-
-            if (!strOrderFee.Contains("."))
-            {
-                strOrderFee = strOrderFee + ".00";
-            }
-            else
-            {
-                if (!(strOrderFee.Substring(strOrderFee.Length - 3, 1) == "."))
-                {
-                    if (strOrderFee.Substring(strOrderFee.Length - 2, 1) == ".")
-                    {
-                        strOrderFee = strOrderFee + "0";
-                    }
-                    else
-                    {
-                        if (strOrderFee.Substring(strOrderFee.Length - 1, 1) == "0")
-                        {
-                            strOrderFee = strOrderFee.Substring(0, strOrderFee.Length - 1);
-                        }
-                    }
-                }
-            }
-
-            
-            if (!strPrintAmount.Contains("."))
-            {
-                strPrintAmount = strPrintAmount + ".00";
-            }
-            else
-            {
-                if (!(strPrintAmount.Substring(strPrintAmount.Length - 3, 1) == "."))
-                {
-                    if (strPrintAmount.Substring(strPrintAmount.Length - 2, 1) == ".")
-                    {
-                        strPrintAmount = strPrintAmount + "0";
-                    }
-                    else
-                    {
-                        if (strPrintAmount.Substring(strPrintAmount.Length - 1, 1) == "0")
-                        {
-                            strPrintAmount = strPrintAmount.Substring(0, strPrintAmount.Length - 1);
-                        }
-                    }
-                }
-            }
-            
-
-            if (!strPostageAmount.Contains("."))
-            {
-                strPostageAmount = strPostageAmount + ".00";
-            }
-            else
-            {
-                if (!(strPostageAmount.Substring(strPostageAmount.Length - 3, 1) == "."))
-                {
-                    if (strPostageAmount.Substring(strPostageAmount.Length - 2, 1) == ".")
-                    {
-                        strPostageAmount = strPostageAmount + "0";
-                    }
-                    else
-                    {
-                        if (strPostageAmount.Substring(strPostageAmount.Length - 1, 1) == "0")
-                        {
-                            strPostageAmount = strPostageAmount.Substring(0, strPostageAmount.Length - 1);
-                        }
-                    }
-                }
-            }
-
-            if (!strTotalChargeAmount.Contains("."))
-            {
-                strTotalChargeAmount = strTotalChargeAmount + ".00";
-            }
-            else
-            {
-                if (!(strTotalChargeAmount.Substring(strTotalChargeAmount.Length - 3, 1) == "."))
-                {
-                    if (strTotalChargeAmount.Substring(strTotalChargeAmount.Length - 2, 1) == ".")
-                    {
-                        strTotalChargeAmount = strTotalChargeAmount + "0";
-                    }
-                    else
-                    {
-                        if (strTotalChargeAmount.Substring(strTotalChargeAmount.Length - 1, 1) == "0")
-                        {
-                            strTotalChargeAmount = strTotalChargeAmount.Substring(0, strTotalChargeAmount.Length - 1);
-                        }
-                    }
-                }
-            }
+            strProductPrice = FormatCurrency(strProductPrice);
+            strOrderFee = FormatCurrency(strOrderFee);
+            strPrintAmount = FormatCurrency(strPrintAmount);
+            strPostageAmount = FormatCurrency(strPostageAmount);
+            strShippingAmount = FormatCurrency(strShippingAmount);
+            strTaxAmount = FormatCurrency(strTaxAmount);
+            strTotalChargeAmount = FormatCurrency(strTotalChargeAmount);
 
             //////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////// POSTING THE PAYMENT INFORMATION TO THE FORM
@@ -229,6 +129,8 @@ namespace StorefrontCreditCardSite
             perPiecePriceSpan.InnerHtml = strProductPrice;
             printAmountSpan.InnerHtml = strPrintAmount;
             postageAmountSpan.InnerHtml = strPostageAmount;
+            shippingAmountSpan.InnerHtml = strShippingAmount;
+            taxAmountSpan.InnerHtml = strTaxAmount;
             orderFeeSpan.InnerHtml = strOrderFee;
             totalChargeAmountSpan.InnerHtml = strTotalChargeAmount;
 
@@ -246,6 +148,40 @@ namespace StorefrontCreditCardSite
             x_relay_response.Value = "true";
             x_relay_url.Value = strRelayResponseURL;
             x_relay_always.Value = "true";
+        }
+
+        #endregion
+
+
+        #region "    Properly Format Currency...    "
+
+        static string FormatCurrency(string strInputValue)
+        {
+            string strFormattedValue = "";
+            
+            if (!strInputValue.Contains("."))
+            {
+                strFormattedValue = strInputValue + ".00";
+            }
+            else
+            {
+                if (!(strInputValue.Substring(strInputValue.Length - 3, 1) == "."))
+                {
+                    if (strInputValue.Substring(strInputValue.Length - 2, 1) == ".")
+                    {
+                        strFormattedValue = strInputValue + "0";
+                    }
+                    else
+                    {
+                        if (strInputValue.Substring(strInputValue.Length - 1, 1) == "0")
+                        {
+                            strFormattedValue = strInputValue.Substring(0, strInputValue.Length - 1);
+                        }
+                    }
+                }
+            }
+
+            return strFormattedValue;
         }
 
         #endregion
@@ -276,6 +212,8 @@ namespace StorefrontCreditCardSite
                     strOrderFee = dataSQLTableRow["Order_Fee"].ToString().Trim();
                     strQuantity = dataSQLTableRow["Quantity"].ToString().Trim();
                     strPostageAmount = dataSQLTableRow["Postage_Amount"].ToString().Trim();
+                    strShippingAmount = dataSQLTableRow["Shipping_Amount"].ToString().Trim();
+                    strTaxAmount = dataSQLTableRow["Tax_Amount"].ToString().Trim();
                 }
             }
             catch (Exception exception)
