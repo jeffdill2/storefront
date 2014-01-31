@@ -68,6 +68,8 @@ namespace Storefront_Automation
         static string strAdditionalNotes = "";
         static string strSplitOverride = "";
         static string strClassOfMail = "";
+        static double dblShippingAmount = 0.0;
+        static double dblTaxAmount = 0.0;
 
         // Values retrieved from interrogating project config table.
         static string strDataCasing = "";
@@ -126,6 +128,9 @@ namespace Storefront_Automation
         static string strDocsJobFolder = "";
         static string strProductionJobFolder = "";
         static string strCSRJobFolder = "";
+        static string strJobStatus = "";
+        static double dblPostageAmount = 0.0;
+        static string strCreditCardRequired = "";
 
         // Output file values.
         static string strProductionPDFFile = "";
@@ -307,6 +312,11 @@ namespace Storefront_Automation
                 }
 
                 //////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////// DETERMINING PAYMENT INFORMATION
+                //////////////////////////////////////////////////////////////////////////////////////////
+                if (!PaymentInformation()) Environment.Exit(1);
+
+                //////////////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////// POSTING DIRECT RESPONSE CSV TO FTP
                 //////////////////////////////////////////////////////////////////////////////////////////
                 if (!DirectResponseProcess()) Environment.Exit(2);
@@ -380,35 +390,7 @@ namespace Storefront_Automation
                                         strInputDataName = strDecompressedZipFolder + strXMLReadLine;
                                         break;
 
-                                    case "JPG":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "JPEG":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "PNG":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "GIF":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "IMG":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "TIFF":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "BMP":
-                                        lstImageFiles.Add(strXMLReadLine);
-                                        break;
-
-                                    case "PDF":
+                                    case "JPG": case "JPEG": case "PNG": case "GIF": case "IMG": case "TIFF": case "BMP": case "PDF":
                                         lstImageFiles.Add(strXMLReadLine);
                                         break;
 
@@ -531,6 +513,26 @@ namespace Storefront_Automation
                                 strClassOfMail = xmlItemDataXMLStream.ReadString().ToUpper();
                                 break;
 
+                            case "SHIPPINGAMOUNT":
+                                try
+                                {
+                                    dblShippingAmount = double.Parse(xmlItemDataXMLStream.ReadString());
+                                }
+                                catch
+                                {
+                                }
+                                break;
+
+                            case "TAXAMOUNT":
+                                try
+                                {
+                                    dblTaxAmount = double.Parse(xmlItemDataXMLStream.ReadString());
+                                }
+                                catch
+                                {
+                                }
+                                break;
+
                             default:
                                 break;
                         }
@@ -649,7 +651,10 @@ namespace Storefront_Automation
 
 
         #region "    Parse Project Config_ORIGINAL...    "
-
+        
+        //////////////////////////////////////////
+        /* NO LONGER USED
+        //////////////////////////////////////////
         static bool ParseProjectConfig_ORIGINAL()
         {
             //////////////////////////////////////////////////////////////////////////////////////////
@@ -764,7 +769,8 @@ namespace Storefront_Automation
 
             return true;
         }
-
+        */
+ 
         #endregion
 
 
@@ -1040,7 +1046,7 @@ namespace Storefront_Automation
         #endregion
 
 
-        #region "    Verify Zip and Region    "
+        #region "    Verify Zip and Region...    "
 
         static bool VerifyZipAndRegion()
         {
@@ -2141,6 +2147,208 @@ namespace Storefront_Automation
         #endregion
 
 
+        #region "    Payment Information...    "
+
+        static bool PaymentInformation()
+        {
+            //////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////// INITIALIZING VARIABLES
+            //////////////////////////////////////////////////////////////////////////////////////////
+            string strPostageStatementPRN = strWorkingJobFolder + strJobNumber + " - Postage Statement.prn";
+            string strMJBProcess = strTaskmasterJobsFolder + strProjectName + ".mjb";
+            string strCommandLine = "-j \"" + Path.GetFileName(strMJBProcess) + "\" -u \"AUTO\" -w \"AUTO\" -r";
+            string strPostagePRNLine;
+            int iPostageStartIndex = 0;
+            int iPostageSubstringLength = 0;
+            string[] aryUserInfoTableLine;
+            string strUserInfoTableLine;
+            bool bolFoundUserID = false;
+            string strUserInfoID;
+            Process cmdPostageProcess = new Process();
+            ProcessStartInfo cmdPostageStartInfo = new ProcessStartInfo();
+            StreamWriter streamPostageMJBProcess;
+            StreamReader streamUserInfoTableFile = new StreamReader(strUserInfoTable);
+            
+            try
+            {   
+                try
+                {
+                    //////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////// COLLECTING THE POSTAGE AMOUNT, IF PRINTMAIL JOB
+                    //////////////////////////////////////////////////////////////////////////////////////////
+                    if (strOutputType.Equals("PRINTMAIL"))
+                    {
+                        streamPostageMJBProcess = new StreamWriter(strMJBProcess, false);
+
+                        streamPostageMJBProcess.WriteLine("[POSTAGESTATEMENT-1]");
+                        streamPostageMJBProcess.WriteLine("LIST=\"" + strBCCDatabase + "\"");
+                        streamPostageMJBProcess.WriteLine("PRESORTNAME=\"" + strProjectName + "\"");
+                        streamPostageMJBProcess.WriteLine("STREAMLIST=\"MERGED;AUTO/NONAUTO;AUTO;MACH;SINGLE PC\"");
+                        streamPostageMJBProcess.WriteLine("FILENAME=\"" + strPostageStatementPRN + "\"");
+                        streamPostageMJBProcess.WriteLine("PRINTER=\"" + strTextPrinter + "\"");
+                        streamPostageMJBProcess.WriteLine("PRINTTOFILE=Y");
+                        streamPostageMJBProcess.WriteLine("PRINTMODE=\"CONSOLIDATED\"");
+                        streamPostageMJBProcess.WriteLine(" ");
+
+                        streamPostageMJBProcess.WriteLine("[TERMINATE-2]");
+
+                        streamPostageMJBProcess.Close();
+                        streamPostageMJBProcess.Dispose();
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        /////////////////////////////////////////////////// RUNNING POSTAGE STATEMENT PRN MJB FILE
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        cmdPostageStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        cmdPostageStartInfo.RedirectStandardError = true;
+                        cmdPostageStartInfo.RedirectStandardOutput = true;
+                        cmdPostageStartInfo.UseShellExecute = false;
+                        cmdPostageStartInfo.CreateNoWindow = true;
+                        cmdPostageStartInfo.FileName = strBCCMailManEXE;
+                        cmdPostageStartInfo.Arguments = strCommandLine;
+
+                        cmdPostageProcess = Process.Start(cmdPostageStartInfo);
+                        cmdPostageProcess.WaitForExit();
+
+                        File.Delete(strMJBProcess);
+
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        /////////////////////////// READING THE POSTAGE AMOUNT FROM THE POSTAGE STATEMENT PRN FILE
+                        //////////////////////////////////////////////////////////////////////////////////////////
+                        StreamReader streamPostagePRNFile = new StreamReader(strPostageStatementPRN);
+
+                        while (!streamPostagePRNFile.EndOfStream)
+                        {
+                            strPostagePRNLine = streamPostagePRNFile.ReadLine();
+
+                            if (strPostagePRNLine.ToLower().Contains("(add parts totals)"))
+                            {
+                                iPostageStartIndex = strPostagePRNLine.ToLower().LastIndexOf("(add parts totals)") + 18;
+                                iPostageSubstringLength = strPostagePRNLine.Length - iPostageStartIndex;
+
+                                dblPostageAmount = double.Parse(strPostagePRNLine.Substring(iPostageStartIndex, iPostageSubstringLength));
+
+                                break;
+                            }
+                        }
+
+                        streamPostagePRNFile.Close();
+                        streamPostagePRNFile.Dispose();
+                    }
+                    else
+                    {
+                        dblPostageAmount = 0.0;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogFile(exception.ToString(), true);
+                    return false;
+                }
+                finally
+                {
+                    cmdPostageProcess.Close();
+                    cmdPostageProcess.Dispose();
+                }
+
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////// DETERMINING IF USER IS REQUIRED TO PAY BY CREDIT CARD
+                //////////////////////////////////////////////////////////////////////////////////////////
+                try
+                {
+                    while (!streamUserInfoTableFile.EndOfStream)
+                    {
+                        strUserInfoTableLine = streamUserInfoTableFile.ReadLine();
+                        aryUserInfoTableLine = strUserInfoTableLine.Split(',');
+
+                        strUserInfoID = aryUserInfoTableLine[0].ToString().ToUpper().Trim();
+
+                        if (strLoginID == strUserInfoID)
+                        {
+                            bolFoundUserID = true;
+                            strCreditCardRequired = aryUserInfoTableLine[7].ToString().ToUpper().Trim();
+
+                            break;
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogFile(exception.ToString(), true);
+                    return false;
+                }
+                finally
+                {
+                    streamUserInfoTableFile.Close();
+                    streamUserInfoTableFile.Dispose();
+                }
+
+                if (!bolFoundUserID)
+                {
+                    LogFile("A login ID of '" + strLoginID + "' could not be found in the user matrix :  " + strUserInfoTable, true);
+                    return false;
+                }
+                else
+                {
+                    if (!(strCreditCardRequired.Equals("NONE")) && !(strCreditCardRequired.Equals("ALL")) && !(strCreditCardRequired.Equals("POSTAGE")))
+                    {
+                        LogFile("An incorrect value of '" + strCreditCardRequired + "' was used in the user matrix :  " + strUserInfoTable, true);
+                        return false;
+                    }
+                }
+
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////// DETERMINING JOB STATUS BASED ON OUTPUT TYPE AND USER TYPE
+                //////////////////////////////////////////////////////////////////////////////////////////
+                try
+                {
+                    if (!bolPaymentExpected)
+                    {
+                        strJobStatus = "READY TO PROCESS";
+                    }
+                    else
+                    {
+                        switch (strOutputType)
+                        {
+                            case "EMAILPDF":
+                                strJobStatus = "READY TO PROCESS";
+                                break;
+
+                            case "PICKANDPACK":
+                                strJobStatus = "PROCESSED";
+                                break;
+
+                            default:
+                                if (strCreditCardRequired.Equals("NONE"))
+                                {
+                                    strJobStatus = "READY TO PROCESS";
+                                }
+                                else
+                                {
+                                    strJobStatus = "PAYMENT NEEDED";
+                                }
+
+                                break;
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    LogFile(exception.ToString(), true);
+                    return false;
+                }
+            }
+            catch (Exception exception)
+            {
+                LogFile(exception.ToString(), true);
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+
         #region "    Direct Response Process...    "
 
         static bool DirectResponseProcess()
@@ -2240,7 +2448,7 @@ namespace Storefront_Automation
                                                            "\"QTY\"");
 
                     streamDirectResponseCSVWrite.WriteLine("\"" + strDRInventoryName + "\"," +
-                                                           "\"STOREFRONT\"," +
+                                                           "\"" + strCreditCardRequired + "\"," +
                                                            "\"\"," +
                                                            "\"\"," +
                                                            "\"Standard\"," +
@@ -2870,24 +3078,6 @@ namespace Storefront_Automation
             //////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////// INITIALIZING VARIABLES
             //////////////////////////////////////////////////////////////////////////////////////////
-            string[] aryUserInfoTableLine;
-            string strUserInfoTableLine;
-            string strPostagePRNLine;
-            bool bolFoundUserID = false;
-            string strUserInfoID;
-            string strJobStatus;
-            string strCreditCardRequired = "";
-            double dblPostageAmount = 0.0;
-            int iPostageStartIndex = 0;
-            int iPostageSubstringLength = 0;
-            string strPostageStatementPRN = strWorkingJobFolder + strJobNumber + " - Postage Statement.prn";
-            string strMJBProcess = strTaskmasterJobsFolder + strProjectName + ".mjb";
-            string strCommandLine = "-j \"" + Path.GetFileName(strMJBProcess) + "\" -u \"AUTO\" -w \"AUTO\" -r";
-            Process cmdPostageProcess = new Process();
-            ProcessStartInfo cmdPostageStartInfo = new ProcessStartInfo();
-            StreamWriter streamPostageMJBProcess;
-            StreamReader streamUserInfoTableFile = new StreamReader(strUserInfoTable);
-
             string strSQLCommand = "INSERT INTO " + strSQLPostProcessTable + " VALUES (" +
                                    "@Direct_Response_Order_Number, " +
                                    "@Project_Name, " +
@@ -2895,6 +3085,8 @@ namespace Storefront_Automation
                                    "@Product_ID, " +
                                    "@Product_Price, " +
                                    "@Postage_Amount, " +
+                                   "@Shipping_Amount, " +
+                                   "@Tax_Amount, " +
                                    "@Order_Fee, " +
                                    "@Credit_Card_Required, " +
                                    "@Job_Type, " +
@@ -2903,172 +3095,6 @@ namespace Storefront_Automation
 
             SqlConnection sqlDBConnection = new SqlConnection(strSQLConnection);
             SqlCommand sqlDBCommand = new SqlCommand(strSQLCommand, sqlDBConnection);
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////// DETERMINING IF USER IS REQUIRED TO PAY BY CREDIT CARD
-            //////////////////////////////////////////////////////////////////////////////////////////
-            try
-            {
-                while (!streamUserInfoTableFile.EndOfStream)
-                {
-                    strUserInfoTableLine = streamUserInfoTableFile.ReadLine();
-                    aryUserInfoTableLine = strUserInfoTableLine.Split(',');
-
-                    strUserInfoID = aryUserInfoTableLine[0].ToString().ToUpper().Trim();
-
-                    if (strLoginID == strUserInfoID)
-                    {
-                        bolFoundUserID = true;
-                        strCreditCardRequired = aryUserInfoTableLine[7].ToString().ToUpper().Trim();
-
-                        break;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                LogFile(exception.ToString(), true);
-                return false;
-            }
-            finally
-            {
-                streamUserInfoTableFile.Close();
-                streamUserInfoTableFile.Dispose();
-            }
-
-            if (!bolFoundUserID)
-            {
-                LogFile("A login ID of '" + strLoginID + "' could not be found in the user matrix :  " + strUserInfoTable, true);
-                return false;
-            }
-            else
-            {
-                if (!(strCreditCardRequired.Equals("NONE")) && !(strCreditCardRequired.Equals("ALL")) && !(strCreditCardRequired.Equals("POSTAGE")))
-                {
-                    LogFile("An incorrect value of '" + strCreditCardRequired + "' was used in the user matrix :  " + strUserInfoTable, true);
-                    return false;
-                }
-            }
-
-            try
-            {
-                //////////////////////////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////////// COLLECTING THE POSTAGE AMOUNT, IF PRINTMAIL JOB
-                //////////////////////////////////////////////////////////////////////////////////////////
-                if (strOutputType.Equals("PRINTMAIL"))
-                {
-                    streamPostageMJBProcess = new StreamWriter(strMJBProcess, false);
-
-                    streamPostageMJBProcess.WriteLine("[POSTAGESTATEMENT-1]");
-                    streamPostageMJBProcess.WriteLine("LIST=\"" + strBCCDatabase + "\"");
-                    streamPostageMJBProcess.WriteLine("PRESORTNAME=\"" + strProjectName + "\"");
-                    streamPostageMJBProcess.WriteLine("STREAMLIST=\"MERGED;AUTO/NONAUTO;AUTO;MACH;SINGLE PC\"");
-                    streamPostageMJBProcess.WriteLine("FILENAME=\"" + strPostageStatementPRN + "\"");
-                    streamPostageMJBProcess.WriteLine("PRINTER=\"" + strTextPrinter + "\"");
-                    streamPostageMJBProcess.WriteLine("PRINTTOFILE=Y");
-                    streamPostageMJBProcess.WriteLine("PRINTMODE=\"CONSOLIDATED\"");
-                    streamPostageMJBProcess.WriteLine(" ");
-
-                    streamPostageMJBProcess.WriteLine("[TERMINATE-2]");
-
-                    streamPostageMJBProcess.Close();
-                    streamPostageMJBProcess.Dispose();
-
-                    //////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////// RUNNING POSTAGE STATEMENT PRN MJB FILE
-                    //////////////////////////////////////////////////////////////////////////////////////////
-                    cmdPostageStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    cmdPostageStartInfo.RedirectStandardError = true;
-                    cmdPostageStartInfo.RedirectStandardOutput = true;
-                    cmdPostageStartInfo.UseShellExecute = false;
-                    cmdPostageStartInfo.CreateNoWindow = true;
-                    cmdPostageStartInfo.FileName = strBCCMailManEXE;
-                    cmdPostageStartInfo.Arguments = strCommandLine;
-
-                    cmdPostageProcess = Process.Start(cmdPostageStartInfo);
-                    cmdPostageProcess.WaitForExit();
-
-                    File.Delete(strMJBProcess);
-
-                    //////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////// READING THE POSTAGE AMOUNT FROM THE POSTAGE STATEMENT PRN FILE
-                    //////////////////////////////////////////////////////////////////////////////////////////
-                    StreamReader streamPostagePRNFile = new StreamReader(strPostageStatementPRN);
-                    
-                    while (!streamPostagePRNFile.EndOfStream)
-                    {
-                        strPostagePRNLine = streamPostagePRNFile.ReadLine();
-
-                        if (strPostagePRNLine.ToLower().Contains("(add parts totals)"))
-                        {
-                            iPostageStartIndex = strPostagePRNLine.ToLower().LastIndexOf("(add parts totals)") + 18;
-                            iPostageSubstringLength = strPostagePRNLine.Length - iPostageStartIndex;
-
-                            dblPostageAmount = double.Parse(strPostagePRNLine.Substring(iPostageStartIndex, iPostageSubstringLength));
-
-                            break;
-                        }
-                    }
-
-                    streamPostagePRNFile.Close();
-                    streamPostagePRNFile.Dispose();
-                }
-                else
-                {
-                    dblPostageAmount = 0.0;
-                }
-            }
-            catch (Exception exception)
-            {
-                LogFile(exception.ToString(), true);
-                return false;
-            }
-            finally
-            {
-                cmdPostageProcess.Close();
-                cmdPostageProcess.Dispose();
-            }
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////// DETERMINING JOB STATUS BASED ON OUTPUT TYPE AND USER TYPE
-            //////////////////////////////////////////////////////////////////////////////////////////
-            try
-            {
-                if (!bolPaymentExpected)
-                {
-                    strJobStatus = "READY TO PROCESS";
-                }
-                else
-                {
-                    switch (strOutputType)
-                    {
-                        case "EMAILPDF":
-                            strJobStatus = "READY TO PROCESS";
-                            break;
-
-                        case "PICKANDPACK":
-                            strJobStatus = "PROCESSED";
-                            break;
-
-                        default:
-                            if (strCreditCardRequired.Equals("NONE"))
-                            {
-                                strJobStatus = "READY TO PROCESS";
-                            }
-                            else
-                            {
-                                strJobStatus = "PAYMENT NEEDED";
-                            }
-
-                            break;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                LogFile(exception.ToString(), true);
-                return false;
-            }
 
             //////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////// CONNECTING TO SQL TABLE, AND INSERTING NEW PROCESSING INFORMATION
@@ -3084,6 +3110,8 @@ namespace Storefront_Automation
                 sqlDBCommand.Parameters.AddWithValue("@Product_ID", strProductID);
                 sqlDBCommand.Parameters.AddWithValue("@Product_Price", (strOutputType.Equals("EMAILPDF") ? 0.0 : dblProductPrice));
                 sqlDBCommand.Parameters.AddWithValue("@Postage_Amount", dblPostageAmount);
+                sqlDBCommand.Parameters.AddWithValue("@Shipping_Amount", dblShippingAmount);
+                sqlDBCommand.Parameters.AddWithValue("@Tax_Amount", dblTaxAmount);
                 sqlDBCommand.Parameters.AddWithValue("@Order_Fee", dblOrderFee);
                 sqlDBCommand.Parameters.AddWithValue("@Credit_Card_Required", strCreditCardRequired);
                 sqlDBCommand.Parameters.AddWithValue("@Job_Type", strOutputType);
